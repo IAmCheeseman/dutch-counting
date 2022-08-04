@@ -1,5 +1,6 @@
 # dutch-counting
-A command line tool to teach counting in Dutch.
+A command line tool written in Haxe to teach counting in Dutch.
+Can teach you counting up to 99. 
 
 Translating digits to Dutch:
 

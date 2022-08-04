@@ -44,7 +44,7 @@ class NumberGenerator {
                 dutchNum = onesPlace + en + tensPlace;
                 wrongAnswer = '${dutchNum} is ${number}!';
                 wrongAnswer += '\n${onesPlace} (${String.fromCharCode(charCode)}) + ${en} + ${tensPlace} (${tensIdx + 2}0)';
-                wrongAnswer += '\nDirectly translated, it means "${String.fromCharCode(charCode)} and ${tensIdx + 2}."';
+                wrongAnswer += '\nDirectly translated, it means "${String.fromCharCode(charCode)} and ${tensIdx + 2}0."';
                 wrongAnswer += '\n"ën" is used instead of "en" when the ones place is twee or drie';
             }
         }

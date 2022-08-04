@@ -56,7 +56,7 @@ class Main {
     public static function main() {
         var generator = new NumberGenerator();
         
-        haxe.Log.trace("Do you want to translate digits to dutch (1), or dutch to digits? (2)");
+        haxe.Log.trace("Do you want to translate digits to dutch (1), or dutch to digits? (2)", null);
         var translateDigits = Sys.stdin().readLine() == "1";
 
         while (true) {

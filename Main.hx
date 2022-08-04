@@ -1,4 +1,6 @@
 
+import haxe.Log;
+
 typedef DutchNumber = { dutchNum: String, numericalNum: String, wrongAnswer: String }
 
 class NumberGenerator {
@@ -19,9 +21,11 @@ class NumberGenerator {
 
         if ([for (i in 0...10) i].contains(numberInt)) {
             dutchNum = digits[numberInt];
+            wrongAnswer = '${number} is "${dutchNum}."';
         }
         else if ([for (i in 10...20) i].contains(numberInt)) {
             dutchNum = teens[numberInt - 10];
+            wrongAnswer = '${number} is "${dutchNum}."';
         }
         else if ([for (i in 20...100) i].contains(numberInt)) {
             var tensIdx = Math.floor((numberInt / 10) - 2);
@@ -39,7 +43,8 @@ class NumberGenerator {
                 var en = (if ([2, 3].contains(index)) "ën" else "en");
                 dutchNum = onesPlace + en + tensPlace;
                 wrongAnswer = '${dutchNum} is ${number}!';
-                wrongAnswer += '\n${onesPlace} (${String.fromCharCode(charCode)}) + ${en} + ${tensPlace} (${tensIdx + 2}x)';
+                wrongAnswer += '\n${onesPlace} (${String.fromCharCode(charCode)}) + ${en} + ${tensPlace} (${tensIdx + 2}0)';
+                wrongAnswer += '\nDirectly translated, it means "${String.fromCharCode(charCode)} and ${tensIdx + 2}."';
                 wrongAnswer += '\n"ën" is used instead of "en" when the ones place is twee or drie';
             }
         }
@@ -56,33 +61,33 @@ class Main {
     public static function main() {
         var generator = new NumberGenerator();
         
-        haxe.Log.trace("Do you want to translate digits to dutch (1), or dutch to digits? (2)", null);
+        Log.trace("Do you want to translate digits to dutch (1), or dutch to digits? (2)", null);
         var translateDigits = Sys.stdin().readLine() == "1";
 
         while (true) {
-            var number = generator.generate(100);
+            var number = generator.generate(99);
             if (translateDigits) {
-                haxe.Log.trace('\nTranslate ${number.numericalNum}.', null);
+                Log.trace('\nTranslate ${number.numericalNum}.', null);
             
                 var input = Sys.stdin().readLine();
 
                 if (input != number.dutchNum) {
-                    haxe.Log.trace('\nWrong!\n${number.wrongAnswer}', null);
+                    Log.trace('\nWrong!\n${number.wrongAnswer}', null);
                 }
                 else {
-                    haxe.Log.trace('\n${input} is correct!', null);
+                    Log.trace('\n${input} is correct!', null);
                 }
             }
             else {
-                haxe.Log.trace('\nTranslate "${number.dutchNum}".', null);
+                Log.trace('\nTranslate "${number.dutchNum}".', null);
             
                 var input = Sys.stdin().readLine();
 
                 if (input != number.numericalNum) {
-                    haxe.Log.trace('\nWrong!\n${number.wrongAnswer}', null);
+                    Log.trace('\nWrong!\n${number.wrongAnswer}', null);
                 }
                 else {
-                    haxe.Log.trace('\n${input} is correct!', null);
+                    Log.trace('\n${input} is correct!', null);
                 }
             }
         }

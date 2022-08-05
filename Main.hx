@@ -51,7 +51,6 @@ class NumberGenerator {
         numberStr += Math.round(Math.random() * max + 1) - 1;
 
         var wrongAnswer = "";
-        
         var dutchNum = "";
         var numberInt = Std.parseInt(numberStr);
 

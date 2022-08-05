@@ -85,6 +85,7 @@ class NumberGenerator {
             
             var hundredsPlace = ones[Std.parseInt(numberArr[0])];
             if (hundredsPlace == "een") hundredsPlace = "";
+            if (hundredsPlace == "veer") hundredsPlace = "vier";
 
             dutchNum = hundredsPlace + 'honderd ' + tens.dutchNum;
 

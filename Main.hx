@@ -48,7 +48,7 @@ class NumberGenerator {
 
     public function generate(max: Int): DutchNumber {
         var numberStr: String = "";
-        numberStr += Math.round(Math.random() * max);
+        numberStr += Math.round(Math.random() * max + 1) - 1;
 
         var wrongAnswer = "";
         
@@ -114,9 +114,12 @@ class Main {
         
         Log.trace("Do you want to translate digits to dutch (1), or dutch to digits? (2)", null);
         var translateDigits = Sys.stdin().readLine() == "1";
+        Log.trace("What do you want the max number to be? (10-999)");
+        var max = Std.parseInt(Sys.stdin().readLine());
+        max = Std.int(Math.min(999, Math.max(10, max)));
 
         while (true) {
-            var number = generator.generate(999);
+            var number = generator.generate(max);
             if (translateDigits) {
                 Log.trace('\nTranslate ${number.numericalNum}.', null);
             

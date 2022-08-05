@@ -114,7 +114,7 @@ class Main {
         
         Log.trace("Do you want to translate digits to dutch (1), or dutch to digits? (2)", null);
         var translateDigits = Sys.stdin().readLine() == "1";
-        Log.trace("What do you want the max number to be? (10-999)");
+        Log.trace("What do you want the max number to be? (10-999)", null);
         var max = Std.parseInt(Sys.stdin().readLine());
         max = Std.int(Math.min(999, Math.max(10, max)));
 

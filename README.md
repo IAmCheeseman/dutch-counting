@@ -12,6 +12,8 @@ Translating Dutch to digits:
 
 # How to count in Dutch
 
+it's pretty much just "`hundreds_case`honderd `ones_case`en`tens_case`," the "en" is replaced with "ën" if `ones_case` is either "twee" or "drie."
+
 In Dutch, you have the ones case:
 
 `0`: nul
@@ -33,7 +35,6 @@ In Dutch, you have the ones case:
 `8`: acht
 
 `9`: negen
-
 
 Then you have the tens case:
 

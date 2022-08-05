@@ -12,7 +12,7 @@ Translating Dutch to digits:
 
 # How to count in Dutch
 
-it's pretty much just "`hundreds_case`honderd `ones_case`en`tens_case`," the "en" is replaced with "ën" if `ones_case` is either "twee" or "drie."
+it's pretty much just "`hundreds_case`honderd `ones_case`en`tens_case`," the "en" is replaced with "ën" if `ones_case` is either "twee" or "drie." So 492 will be something like "vierhonderd tweeënnegen."
 
 In Dutch, you have the ones case:
 

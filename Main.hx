@@ -4,54 +4,105 @@ import haxe.Log;
 typedef DutchNumber = { dutchNum: String, numericalNum: String, wrongAnswer: String }
 
 class NumberGenerator {
-    final digits = ["nul", "een", "twee", "drie", "vier", "vijf", "zes", "zeven", "acht", "negen"];
+    final ones = ["nul", "een", "twee", "drie", "vier", "vijf", "zes", "zeven", "acht", "negen"];
     final teens = ["tien", "elf", "twaaelf", "dertien", "veertien", "vijftien", "zestien", "zeventien", "achttien", "negentien"];
     final tens = ["twintig", "dertig", "veertig", "vijftig", "zestig", "zeventig", "tachig", "negentig"];
 
     public function new() {}
 
-    public function generate(max: Int): DutchNumber {
-        var number: String = "";
-        number += Math.round(Math.random() * max);
-
-        var wrongAnswer = "";
-        
+    function _getTens(numberStr: String, numberInt: Int): DutchNumber {
         var dutchNum = "";
-        var numberInt = Std.parseInt(number);
+        var wrongAnswer = "";
 
-        if ([for (i in 0...10) i].contains(numberInt)) {
-            dutchNum = digits[numberInt];
-            wrongAnswer = '${number} is "${dutchNum}."';
+        var numberArr = numberStr.split("");
+
+        var tensIdx = if ([for (i in 100...1000) i].contains(numberInt)) 0; else 0;
+        var number = Std.parseInt(numberArr[tensIdx] + "0");
+
+        var tensIdx = Math.floor((number / 10) - 2);
+        var tensPlace = tens[tensIdx];
+        // Not sure if there's a better way to do this lmao
+        var index = Std.parseInt(numberArr[numberArr.length - 1]);
+        var onesPlace = ones[index];
+        
+        if (index == 0) {
+            dutchNum = tensPlace;
+            wrongAnswer = '${dutchNum} is ${numberStr}!';
         }
-        else if ([for (i in 10...20) i].contains(numberInt)) {
-            dutchNum = teens[numberInt - 10];
-            wrongAnswer = '${number} is "${dutchNum}."';
-        }
-        else if ([for (i in 20...100) i].contains(numberInt)) {
-            var tensIdx = Math.floor((numberInt / 10) - 2);
-            var tensPlace = tens[tensIdx];
-            // Not sure if there's a better way to do this lmao
-            var charCode = StringTools.fastCodeAt(number, 1);
-            var index = Std.parseInt(String.fromCharCode(charCode));
-            var onesPlace = digits[index];
-            
-            if (index == 0) {
-                dutchNum = tensPlace;
-                wrongAnswer = '${dutchNum} is ${number}!';
-            }
-            else {
-                var en = (if ([2, 3].contains(index)) "ën" else "en");
-                dutchNum = onesPlace + en + tensPlace;
-                wrongAnswer = '${dutchNum} is ${number}!';
-                wrongAnswer += '\n${onesPlace} (${String.fromCharCode(charCode)}) + ${en} + ${tensPlace} (${tensIdx + 2}0)';
-                wrongAnswer += '\nDirectly translated, it means "${String.fromCharCode(charCode)} and ${tensIdx + 2}0."';
-                wrongAnswer += '\n"ën" is used instead of "en" when the ones place is twee or drie';
-            }
+        else {
+            var en = (if ([2, 3].contains(index)) "ën" else "en");
+            dutchNum = onesPlace + en + tensPlace;
+            wrongAnswer = '${dutchNum} is ${numberStr}!';
+            wrongAnswer += '\nTo find out the tens place:';
+            wrongAnswer += '\n${onesPlace} (${numberArr[numberArr.length - 1]}) + ${en} + ${tensPlace} (${tensIdx + 2}0)';
+            wrongAnswer += '\nDirectly translated, it means "${numberArr[numberArr.length - 1]} and ${tensIdx + 2}0."';
+            wrongAnswer += '\n"ën" is used instead of "en" when the ones place is twee or drie';
         }
 
         return {
             dutchNum: dutchNum,
-            numericalNum: number,
+            numericalNum: numberStr,
+            wrongAnswer: wrongAnswer
+        };
+    }
+
+    public function generate(max: Int): DutchNumber {
+        var numberStr: String = "";
+        numberStr += Math.round(Math.random() * max);
+
+        var wrongAnswer = "";
+        
+        var dutchNum = "";
+        var numberInt = Std.parseInt(numberStr);
+
+        if ([for (i in 0...10) i].contains(numberInt)) {
+            dutchNum = ones[numberInt];
+            wrongAnswer = '${numberStr} is "${dutchNum}."';
+        }
+        else if ([for (i in 10...20) i].contains(numberInt)) {
+            dutchNum = teens[numberInt - 10];
+            wrongAnswer = '${numberStr} is "${dutchNum}."';
+        }
+        else if ([for (i in 20...100) i].contains(numberInt)) {
+            return _getTens(numberStr, numberInt);
+        }
+        else if ([for (i in 100...1000) i].contains(numberInt)) {
+            var numberArr = numberStr.split("");
+            var tens: DutchNumber;
+
+            if (numberArr[numberArr.length - 2] != "0") {
+                var tensPlace = numberArr[numberArr.length - 2] + numberArr[numberArr.length - 1];
+                tens = _getTens(tensPlace, numberInt);
+            }
+            else {
+                var dutchNum = ones[Std.parseInt(numberArr[numberArr.length - 1])];
+                tens = {
+                    dutchNum: dutchNum,
+                    numericalNum: numberStr,
+                    wrongAnswer: '${dutchNum} is ${numberArr[numberArr.length - 1]}!'
+                };
+            }
+            
+            var hundredsPlace = ones[Std.parseInt(numberArr[0])];
+            if (hundredsPlace == "een") hundredsPlace = "";
+
+            dutchNum = hundredsPlace + 'honderd ' + tens.dutchNum;
+
+            wrongAnswer = tens.wrongAnswer;
+            wrongAnswer += '\nTo find out the hundreds place:';
+            if (hundredsPlace != "") {
+                wrongAnswer += '\n${hundredsPlace} (${numberArr[0]}) + honderd (100)';
+            }
+            else {
+                wrongAnswer += '\nhonderd (100), when it\'s just 100, you omit the "een", so it\'s "honderd," not "eenhonderd".';
+            }
+
+            wrongAnswer += '\nAll together, that\'s "${dutchNum}"';
+        }
+
+        return {
+            dutchNum: dutchNum,
+            numericalNum: numberStr,
             wrongAnswer: wrongAnswer
         };
     }
@@ -65,7 +116,7 @@ class Main {
         var translateDigits = Sys.stdin().readLine() == "1";
 
         while (true) {
-            var number = generator.generate(99);
+            var number = generator.generate(999);
             if (translateDigits) {
                 Log.trace('\nTranslate ${number.numericalNum}.', null);
             

@@ -3,5 +3,9 @@
             [learning-dutch.core :refer :all]))
 
 (deftest a-test
-  (testing "FIXME, I fail."
-    (is (= 0 1))))
+  (testing "Simple Translation (1-10)"
+    (is (= (translate 1) "een")))
+  (testing "Translation (10-20"
+    (is (= (translate 11) "elf")))
+  (testing "Advanced Translation"
+    (is (= (translate 21) "eenentwintig"))))

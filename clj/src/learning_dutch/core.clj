@@ -20,13 +20,15 @@
   (println question)
   (read-line))
 
-(defn generate []
+(defn generate [mode]
   (let [random (rand-int 100)
         asWord (translate random)
-        input (ask (str "Hello! What does " random " mean in dutch?"))]
-    (if (= input asWord) (println "Congratulations!") (println "Your family name was put to shame.."))
+        input (ask (if (= mode "1") (str "What does " random " mean in dutch?") (str "What is " asWord " as digit?")))]
+    (if (if (= mode "1") (= input asWord) (= input (str random))) (println "Congratulations!") (println "Your family name was put to shame.."))
     (println "---")))
 
 (defn -main
   [& args]
-  (while true (generate)))
+      (def mode (ask "Do you want to translate digits to dutch (1), or dutch to digits? (2)"))
+      (if (not (contains? #{"1" "2"} mode)) (throw (new Exception "Mode isn't 1 or 2. Illegal.")))
+  (while true (generate mode)))

@@ -29,6 +29,6 @@
 
 (defn -main
   [& args]
-      (def mode (ask "Do you want to translate digits to dutch (1), or dutch to digits? (2)"))
-      (if (not (contains? #{"1" "2"} mode)) (throw (new Exception "Mode isn't 1 or 2. Illegal.")))
+  (def mode (ask "Do you want to translate digits to dutch (1), or dutch to digits? (2)"))
+  (if (not (contains? #{"1" "2"} mode)) (throw (new Exception "Mode isn't 1 or 2. Illegal.")))
   (while true (generate mode)))

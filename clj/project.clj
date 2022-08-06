@@ -6,4 +6,5 @@
   :dependencies [[org.clojure/clojure "1.10.1"]]
   :repl-options {:init-ns learning-dutch.core}
   :plugins [[lein-cljfmt "0.8.2"]]
-  :main learning-dutch.core)
+  :main ^:skip-aot learning-dutch.core
+  :profiles {:uberjar {:aot :all}})

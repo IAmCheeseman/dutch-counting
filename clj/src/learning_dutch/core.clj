@@ -1,4 +1,5 @@
-(ns learning-dutch.core)
+(ns learning-dutch.core
+  (:gen-class :main true))
 
 ; Every number!
 (def digits ["nul", "een", "twee", "drie", "vier", "vijf", "zes", "zeven", "acht", "negen"])
@@ -15,11 +16,17 @@
                                    index (Character/digit charCode 10)
                                    onesPlace (get digits index)] (if (= index 0) tensPlace (str onesPlace (if (contains? #{2 3} index) "ën" "en") tensPlace)))))
 
+(defn ask [question]
+  (println question)
+  (read-line))
+
 (defn generate []
-  (let [random 32
-        asWord (translate random)]
-    (println asWord)))
+  (let [random (rand-int 100)
+        asWord (translate random)
+        input (ask (str "Hello! What does " random " mean in dutch?"))]
+    (if (= input asWord) (println "Congratulations!") (println "Your family name was put to shame.."))
+    (println "---")))
 
 (defn -main
   [& args]
-  (generate))
+  (while true (generate)))

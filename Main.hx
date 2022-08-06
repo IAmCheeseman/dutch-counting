@@ -14,15 +14,13 @@ class NumberGenerator {
         var dutchNum = "";
         var wrongAnswer = "";
 
-        var numberArr = numberStr.split("");
-
         var tensIdx = if ([for (i in 100...1000) i].contains(numberInt)) 0; else 0;
-        var number = Std.parseInt(numberArr[tensIdx] + "0");
+        var number = Std.parseInt(numberStr.charAt(tensIdx) + "0");
 
         var tensIdx = Math.floor((number / 10) - 2);
         var tensPlace = tens[tensIdx];
-        // Not sure if there's a better way to do this lmao
-        var index = Std.parseInt(numberArr[numberArr.length - 1]);
+        // There was a better way.
+        var index = Std.parseInt(numberStr.charAt(numberStr.length - 1));
         var onesPlace = ones[index];
         
         if (index == 0) {
@@ -34,8 +32,8 @@ class NumberGenerator {
             dutchNum = onesPlace + en + tensPlace;
             wrongAnswer = '${dutchNum} is ${numberStr}!';
             wrongAnswer += '\nTo find out the tens place:';
-            wrongAnswer += '\n${onesPlace} (${numberArr[numberArr.length - 1]}) + ${en} + ${tensPlace} (${tensIdx + 2}0)';
-            wrongAnswer += '\nDirectly translated, it means "${numberArr[numberArr.length - 1]} and ${tensIdx + 2}0."';
+            wrongAnswer += '\n${onesPlace} (${numberStr.charAt(numberStr.length)}) + ${en} + ${tensPlace} (${tensIdx + 2}0)';
+            wrongAnswer += '\nDirectly translated, it means "${numberStr.charAt(numberStr.length - 1)} and ${tensIdx + 2}0."';
             wrongAnswer += '\n"ën" is used instead of "en" when the ones place is twee or drie';
         }
 
@@ -66,23 +64,23 @@ class NumberGenerator {
             return _getTens(numberStr, numberInt);
         }
         else if ([for (i in 100...1000) i].contains(numberInt)) {
-            var numberArr = numberStr.split("");
             var tens: DutchNumber;
 
-            if (numberArr[numberArr.length - 2] != "0") {
-                var tensPlace = numberArr[numberArr.length - 2] + numberArr[numberArr.length - 1];
+            if (numberStr.charAt(numberStr.length - 2) != "0") {
+                var tensPlace = numberStr.charAt(numberStr.length - 2) + numberStr.charAt(numberStr.length - 1);
+                trace(tensPlace);
                 tens = _getTens(tensPlace, numberInt);
             }
             else {
-                var dutchNum = ones[Std.parseInt(numberArr[numberArr.length - 1])];
+                var dutchNum = ones[Std.parseInt(numberStr.charAt(numberStr.length - 1))];
                 tens = {
                     dutchNum: dutchNum,
                     numericalNum: numberStr,
-                    wrongAnswer: '${dutchNum} is ${numberArr[numberArr.length - 1]}!'
+                    wrongAnswer: '${dutchNum} is ${numberStr.charAt(numberStr.length - 1)}!'
                 };
             }
             
-            var hundredsPlace = ones[Std.parseInt(numberArr[0])];
+            var hundredsPlace = ones[Std.parseInt(numberStr.charAt(0))];
             if (hundredsPlace == "een") hundredsPlace = "";
             if (hundredsPlace == "veer") hundredsPlace = "vier";
 
@@ -91,7 +89,7 @@ class NumberGenerator {
             wrongAnswer = tens.wrongAnswer;
             wrongAnswer += '\nTo find out the hundreds place:';
             if (hundredsPlace != "") {
-                wrongAnswer += '\n${hundredsPlace} (${numberArr[0]}) + honderd (100)';
+                wrongAnswer += '\n${hundredsPlace} (${numberStr.charAt(0)}) + honderd (100)';
             }
             else {
                 wrongAnswer += '\nhonderd (100), when it\'s just 100, you omit the "een", so it\'s "honderd," not "eenhonderd".';

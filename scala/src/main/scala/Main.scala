@@ -10,7 +10,7 @@ object Main {
     if (x < 10) {
       DIGITS(x)
     } else if (x > 10 && x < 20) {
-      TEENS(x - 1)
+      TEENS(x - 10)
     } else {
       val tensIdx = Math.floor(x / 10 - 2).toInt
       val idx = Character.digit(x.toString.charAt(1), 10)

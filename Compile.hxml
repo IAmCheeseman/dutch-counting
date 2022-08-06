@@ -1,2 +1,4 @@
 -main Main
 -hl out.hl
+#-D useNumbers
+-cmd hl ./out.hl

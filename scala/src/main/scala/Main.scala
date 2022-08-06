@@ -31,7 +31,6 @@ object Main {
     val toWord = translate(random)
     val input = ask(if (mode == 1) s"What is $random in Dutch??????" else s"What is $toWord as number??????")
 
-
     if (if (mode == 1) toWord == input else random.toString == input)
       println("Congratulations!")
     else

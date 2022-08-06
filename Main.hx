@@ -1,113 +1,14 @@
-
+import NumberGenerator.DutchNumber;
 import haxe.Log;
 
-typedef DutchNumber = { dutchNum: String, numericalNum: String, wrongAnswer: String }
-
-class NumberGenerator {
-    final ones = ["nul", "een", "twee", "drie", "vier", "vijf", "zes", "zeven", "acht", "negen"];
-    final teens = ["tien", "elf", "twaaelf", "dertien", "veertien", "vijftien", "zestien", "zeventien", "achttien", "negentien"];
-    final tens = ["twintig", "dertig", "veertig", "vijftig", "zestig", "zeventig", "tachig", "negentig"];
-
-    public function new() {}
-
-    function _getTens(numberStr: String, numberInt: Int): DutchNumber {
-        var dutchNum = "";
-        var wrongAnswer = "";
-
-        var tensIdx = if ([for (i in 100...1000) i].contains(numberInt)) 0; else 0;
-        var number = Std.parseInt(numberStr.charAt(tensIdx) + "0");
-
-        var tensIdx = Math.floor((number / 10) - 2);
-        var tensPlace = tens[tensIdx];
-        // There was a better way.
-        var index = Std.parseInt(numberStr.charAt(numberStr.length - 1));
-        var onesPlace = ones[index];
-        
-        if (index == 0) {
-            dutchNum = tensPlace;
-            wrongAnswer = '${dutchNum} is ${numberStr}!';
-        }
-        else {
-            var en = (if ([2, 3].contains(index)) "ën" else "en");
-            dutchNum = onesPlace + en + tensPlace;
-            wrongAnswer = '${dutchNum} is ${numberStr}!';
-            wrongAnswer += '\nTo find out the tens place:';
-            wrongAnswer += '\n${onesPlace} (${numberStr.charAt(numberStr.length)}) + ${en} + ${tensPlace} (${tensIdx + 2}0)';
-            wrongAnswer += '\nDirectly translated, it means "${numberStr.charAt(numberStr.length - 1)} and ${tensIdx + 2}0."';
-            wrongAnswer += '\n"ën" is used instead of "en" when the ones place is twee or drie';
-        }
-
-        return {
-            dutchNum: dutchNum,
-            numericalNum: numberStr,
-            wrongAnswer: wrongAnswer
-        };
-    }
-
-    public function generate(max: Int): DutchNumber {
-        var numberStr: String = "";
-        numberStr += Math.round(Math.random() * max + 1) - 1;
-
-        var wrongAnswer = "";
-        var dutchNum = "";
-        var numberInt = Std.parseInt(numberStr);
-
-        if ([for (i in 0...10) i].contains(numberInt)) {
-            dutchNum = ones[numberInt];
-            wrongAnswer = '${numberStr} is "${dutchNum}."';
-        }
-        else if ([for (i in 10...20) i].contains(numberInt)) {
-            dutchNum = teens[numberInt - 10];
-            wrongAnswer = '${numberStr} is "${dutchNum}."';
-        }
-        else if ([for (i in 20...100) i].contains(numberInt)) {
-            return _getTens(numberStr, numberInt);
-        }
-        else if ([for (i in 100...1000) i].contains(numberInt)) {
-            var tens: DutchNumber;
-
-            if (numberStr.charAt(numberStr.length - 2) != "0") {
-                var tensPlace = numberStr.charAt(numberStr.length - 2) + numberStr.charAt(numberStr.length - 1);
-                trace(tensPlace);
-                tens = _getTens(tensPlace, numberInt);
-            }
-            else {
-                var dutchNum = ones[Std.parseInt(numberStr.charAt(numberStr.length - 1))];
-                tens = {
-                    dutchNum: dutchNum,
-                    numericalNum: numberStr,
-                    wrongAnswer: '${dutchNum} is ${numberStr.charAt(numberStr.length - 1)}!'
-                };
-            }
-            
-            var hundredsPlace = ones[Std.parseInt(numberStr.charAt(0))];
-            if (hundredsPlace == "een") hundredsPlace = "";
-            if (hundredsPlace == "veer") hundredsPlace = "vier";
-
-            dutchNum = hundredsPlace + 'honderd ' + tens.dutchNum;
-
-            wrongAnswer = tens.wrongAnswer;
-            wrongAnswer += '\nTo find out the hundreds place:';
-            if (hundredsPlace != "") {
-                wrongAnswer += '\n${hundredsPlace} (${numberStr.charAt(0)}) + honderd (100)';
-            }
-            else {
-                wrongAnswer += '\nhonderd (100), when it\'s just 100, you omit the "een", so it\'s "honderd," not "eenhonderd".';
-            }
-
-            wrongAnswer += '\nAll together, that\'s "${dutchNum}"';
-        }
-
-        return {
-            dutchNum: dutchNum,
-            numericalNum: numberStr,
-            wrongAnswer: wrongAnswer
-        };
-    }
-}
 
 class Main {
-    public static function main() {
+    public static function prompt(number: DutchNumber, translateDigits: Bool): String {
+        Log.trace('\nTranslate ${if (translateDigits) number.numericalNum else number.dutchNum}.', null);
+        return Sys.stdin().readLine();
+    }
+
+    public static function main(): Void {
         var generator = new NumberGenerator();
         
         Log.trace("Do you want to translate digits to dutch (1), or dutch to digits? (2)", null);
@@ -118,29 +19,13 @@ class Main {
 
         while (true) {
             var number = generator.generate(max);
-            if (translateDigits) {
-                Log.trace('\nTranslate ${number.numericalNum}.', null);
-            
-                var input = Sys.stdin().readLine();
+            var input = prompt(number, translateDigits);
 
-                if (input != number.dutchNum) {
-                    Log.trace('\nWrong!\n${number.wrongAnswer}', null);
-                }
-                else {
-                    Log.trace('\n${input} is correct!', null);
-                }
+            if (if (translateDigits) input != number.dutchNum else input != number.numericalNum) {
+                Log.trace('\nWrong!\n${number.wrongAnswer}', null);
             }
             else {
-                Log.trace('\nTranslate "${number.dutchNum}".', null);
-            
-                var input = Sys.stdin().readLine();
-
-                if (input != number.numericalNum) {
-                    Log.trace('\nWrong!\n${number.wrongAnswer}', null);
-                }
-                else {
-                    Log.trace('\n${input} is correct!', null);
-                }
+                Log.trace('\n${input} is correct!', null);
             }
         }
     }
